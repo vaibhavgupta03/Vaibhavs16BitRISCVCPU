@@ -4,7 +4,7 @@ module cpu #(parameter SIM_MODE = 0)(
     input        clk, rst,
     input        single_step, run_halt, modeRead,
     input  [3:0] valin,
-    output [3:0] leds
+    output [7:0] leds
 );
     wire slow_clk;
     clkDivider #(.SIM_MODE(SIM_MODE)) CLK_DIV(
@@ -246,5 +246,5 @@ module cpu #(parameter SIM_MODE = 0)(
         end
     end
 
-    assign leds = modeRead ? reg_memOut[3:0] : ex_result[3:0];
+    assign leds = modeRead ? reg_memOut[7:0] : ex_result[7:0];
 endmodule

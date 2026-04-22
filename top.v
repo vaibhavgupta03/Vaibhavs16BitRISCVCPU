@@ -9,7 +9,7 @@ module top #(
     input        btn2,   // run_halt    - toggle continuous run
     input        btn3,   // modeRead    - 0=show ALU result, 1=show register
     input  [3:0] sw,     // valin       - register index to display in modeRead
-    output [3:0] led     // leds        - 4-bit output
+    output [7:0] led     // leds        - 4-bit output
 );
 
     cpu #(.SIM_MODE(SIM_MODE)) CPU (

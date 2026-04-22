@@ -5,7 +5,7 @@ module tb_cpu_test_all;
     reg        clk, rst;
     reg        single_step, run_halt, modeRead;
     reg  [3:0] valin;
-    wire [3:0] leds;
+    wire [7:0] leds;
 
     cpu #(.SIM_MODE(1)) DUT (
         .clk        (clk),
