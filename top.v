@@ -1,9 +1,5 @@
 `timescale 1ns / 1ps
-// ─── Top-Level Wrapper ────────────────────────────────────────────────
-// Maps board buttons / switches to the CPU interface.
-// SIM_MODE=0  → clkDivider active  (100 MHz → ~1 Hz, visible on LEDs)
-// SIM_MODE=1  → clkDivider bypassed (used only in testbench instantiation)
-// ─────────────────────────────────────────────────────────────────────
+
 module top #(
     parameter SIM_MODE = 0
 )(
