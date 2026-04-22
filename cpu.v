@@ -24,7 +24,7 @@ module cpu #(parameter SIM_MODE = 0)(
     reg        running;
     reg        ss_prev, rh_prev;
 
-    // ── Decoded control signals (latched at DECODE) ──────────────────
+    
     reg [3:0]  d_grp, d_dest, d_srcA, d_srcB;
     reg [15:0] d_imm;
     reg [3:0]  d_alu_op;
@@ -32,15 +32,15 @@ module cpu #(parameter SIM_MODE = 0)(
     reg        d_is_branch, d_is_jump, d_is_jal, d_is_lui;
     reg [2:0]  d_branch_type;
 
-    // ── Execute / writeback registers ────────────────────────────────
+    
     reg [15:0] ex_result;
     reg [3:0]  ex_flags;
     reg [15:0] wb_data;
     
-    // FIX 3: Dedicated register to safely latch store data
+    
     reg [15:0] store_data; 
 
-    // ── Decoder wires ─────────────────────────────────────────────────
+    
     wire [15:0] rom_data;
     wire [3:0]  dec_grp, dec_dest, dec_srcA, dec_srcB;
     wire [15:0] dec_imm;
@@ -88,7 +88,7 @@ module cpu #(parameter SIM_MODE = 0)(
         .memOut(reg_memOut)
     );
 
-    // ── ALU B-input mux ──────────────────────────────────────────────
+    
     alu ALU(
         .opcode(d_alu_op),
         .A(regA_data),
@@ -109,7 +109,7 @@ module cpu #(parameter SIM_MODE = 0)(
         .rd_data(mem_rd_data)
     );
 
-    // ── Branch condition evaluator ────────────────────────────────────
+    
     reg branch_taken;
     always @(*) begin
         case (d_branch_type)
@@ -123,7 +123,7 @@ module cpu #(parameter SIM_MODE = 0)(
         endcase
     end
 
-    // ── Main state machine ────────────────────────────────────────────
+    
     always @(posedge slow_clk or posedge rst) begin
         if (rst) begin
             state      <= FETCH;
@@ -173,7 +173,7 @@ module cpu #(parameter SIM_MODE = 0)(
                     d_srcB       <= dec_srcB;
                     d_imm        <= dec_imm;
                     
-                    // FIX 2: Latch ALU op directly from IMM_WORD for R-type instructions to bypass combinational delay
+                    
                     d_alu_op     <= (dec_grp == 4'b0000) ? IMM_WORD[3:0] : dec_alu_op; 
                     
                     d_reg_write  <= dec_reg_write;
@@ -191,7 +191,7 @@ module cpu #(parameter SIM_MODE = 0)(
                     ex_result  <= alu_result_w;
                     ex_flags   <= alu_flags_w;
                     
-                    // FIX 3: Safely capture store data while Register File output is stable
+                    
                     store_data <= RF.bank[d_dest]; 
 
                     if (d_is_jump) begin
@@ -199,7 +199,7 @@ module cpu #(parameter SIM_MODE = 0)(
                         state <= FETCH;
 
                     end else if (d_is_jal) begin
-                        // FIX 1: Save the exact PC, which is already pointing to the next instruction
+                        
                         wb_data <= {10'd0, PC}; 
                         PC      <= PC + d_imm[5:0];
                         state   <= WRITEBACK;
@@ -213,7 +213,7 @@ module cpu #(parameter SIM_MODE = 0)(
                     if (d_mem_write) begin
                         ram_wr_en   <= 1'b1;
                         ram_addr    <= ex_result[5:0];
-                        // FIX 3: Use the safely latched store_data
+                        
                         ram_wr_data <= store_data;   
                     end
 
