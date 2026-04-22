@@ -1,41 +1,28 @@
-; ── Basic ALU ──────────────────────────────────────────
-        ADDI  R1, R0, 5       ; R1 = 5
-        ADDI  R2, R0, 3       ; R2 = 3
-        ADD   R3, R1, R2      ; R3 = 8
-        SUB   R4, R1, R2      ; R4 = 2
-        AND   R5, R1, R2      ; R5 = 1
-        OR    R6, R1, R2      ; R6 = 7
-        XOR   R7, R1, R2      ; R7 = 6
-        SLT   R8, R2, R1      ; R8 = 1  (3 < 5)
-        MUL   R9, R1, R2      ; R9 = 15
+# Sum of first 10 natural numbers (1+2+...+10 = 55 = 0x0037)
+# Register usage:
+#   R1 = counter (1 to 10)
+#   R2 = sum accumulator
+#   R3 = limit (10)
 
-; ── Shift operations ────────────────────────────────────
-        SLLI  R10, R1, 2      ; R10 = 20  (5 << 2)
-        SRLI  R11, R10, 1     ; R11 = 10  (20 >> 1)
+# R1 = 1  (counter start)
+ADDI R1, R0, 1
 
-; ── Load/Store ──────────────────────────────────────────
-        SW    R3, R0, 0       ; mem[0] = 8  (store R3 at addr 0)
-        SW    R4, R0, 1       ; mem[1] = 2  (store R4 at addr 1)
-        LW    R12, R0, 0      ; R12 = mem[0] = 8
-        LW    R13, R0, 1      ; R13 = mem[1] = 2
+# R2 = 0  (sum = 0)
+ADDI R2, R0, 0
 
-; ── Branch ──────────────────────────────────────────────
-        BEQ   R12, R3, SKIP   ; branch if R12==R3 (8==8) → taken
-        ADDI  R14, R0, 99     ; should be SKIPPED
-SKIP:
-        ADDI  R14, R0, 42     ; R14 = 42  (this runs)
+# R3 = 10 (loop limit)
+ADDI R3, R0, 10
 
-; ── Jump ────────────────────────────────────────────────
-        JAL   R15, FUNC       ; call FUNC, R15 = return address
-        ADDI  R1, R0, 77      ; runs after return
-        J     END             ; jump to end
+# LOOP: sum += counter
+# ADD R2, R2, R1   → R2 = R2 + R1
+ADD R2, R2, R1
 
-; ── Function ────────────────────────────────────────────
-FUNC:
-        ADDI  R2, R0, 100     ; R2 = 100 inside function
-        NOP
-        ; return: J 0(R15) — not implemented yet, just fall through
+# ADDI R1, R1, 1   → R1 = R1 + 1
+ADDI R1, R1, 1
 
-END:
-        NOP
-        NOP
+# BNE R1, R3, -2   → if R1 != R3, jump back to ADD
+BNE R1, R3, -2
+
+# Done: R2 = 55 (0x37)
+# Infinite loop to hold result
+J 0

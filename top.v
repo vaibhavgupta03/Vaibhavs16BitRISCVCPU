@@ -1,17 +1,13 @@
 `timescale 1ns / 1ps
-
-module top #(
-    parameter SIM_MODE = 0
-)(
+module top #(parameter SIM_MODE = 0)(
     input        clk,
-    input        btn0,   // rst         - active-high reset
-    input        btn1,   // single_step - advance one instruction
-    input        btn2,   // run_halt    - toggle continuous run
-    input        btn3,   // modeRead    - 0=show ALU result, 1=show register
-    input  [3:0] sw,     // valin       - register index to display in modeRead
-    output [7:0] led     // leds        - 4-bit output
+    input        btn0,   // rst         (active-high)
+    input        btn1,   // single_step
+    input        btn2,   // run_halt toggle
+    input        btn3,   // modeRead
+    input  [3:0] sw,
+    output [7:0] led
 );
-
     cpu #(.SIM_MODE(SIM_MODE)) CPU (
         .clk        (clk),
         .rst        (btn0),
@@ -21,5 +17,4 @@ module top #(
         .valin      (sw),
         .leds       (led)
     );
-
 endmodule

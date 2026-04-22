@@ -24,7 +24,6 @@ module cpu #(parameter SIM_MODE = 0)(
     reg        running;
     reg        ss_prev, rh_prev;
 
-    
     reg [3:0]  d_grp, d_dest, d_srcA, d_srcB;
     reg [15:0] d_imm;
     reg [3:0]  d_alu_op;
@@ -32,15 +31,12 @@ module cpu #(parameter SIM_MODE = 0)(
     reg        d_is_branch, d_is_jump, d_is_jal, d_is_lui;
     reg [2:0]  d_branch_type;
 
-    
     reg [15:0] ex_result;
     reg [3:0]  ex_flags;
     reg [15:0] wb_data;
     
-    
     reg [15:0] store_data; 
 
-    
     wire [15:0] rom_data;
     wire [3:0]  dec_grp, dec_dest, dec_srcA, dec_srcB;
     wire [15:0] dec_imm;
@@ -88,7 +84,7 @@ module cpu #(parameter SIM_MODE = 0)(
         .memOut(reg_memOut)
     );
 
-    
+
     alu ALU(
         .opcode(d_alu_op),
         .A(regA_data),
@@ -109,7 +105,7 @@ module cpu #(parameter SIM_MODE = 0)(
         .rd_data(mem_rd_data)
     );
 
-    
+
     reg branch_taken;
     always @(*) begin
         case (d_branch_type)
@@ -123,14 +119,14 @@ module cpu #(parameter SIM_MODE = 0)(
         endcase
     end
 
-    
+
     always @(posedge slow_clk or posedge rst) begin
         if (rst) begin
             state      <= FETCH;
             PC         <= 6'd0;
             IR         <= 16'd0;
             IMM_WORD   <= 16'd0;
-            running    <= 1'b0;
+            running    <= 1'b1;
             rf_wr_en   <= 1'b0;
             ram_wr_en  <= 1'b0;
             ss_prev    <= 1'b0;
@@ -246,5 +242,11 @@ module cpu #(parameter SIM_MODE = 0)(
         end
     end
 
-    assign leds = modeRead ? reg_memOut[7:0] : ex_result[7:0];
+    assign leds[3:0] = modeRead ? reg_memOut[3:0] : ex_result[3:0];
+    assign leds[7:4] = {
+        (state == HALT),   // led[7]: program done
+        running,           // led[6]: CPU is running
+        ram_wr_en,         // led[5]: memory write active
+        rf_wr_en           // led[4]: register write active
+    };
 endmodule
