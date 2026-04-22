@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 module alu(
-    input  [3:0]  opcode,    // 16 operations
+    input  [3:0]  opcode,
     input  [15:0] A,
     input  [15:0] B,
     output reg [15:0] result,
@@ -22,7 +22,7 @@ module alu(
                XOR  = 4'd4,  SLL  = 4'd5,
                SRL  = 4'd6,  SRA  = 4'd7,
                SLT  = 4'd8,  SLTU = 4'd9,
-               MUL  = 4'd10, PASS = 4'd11,  // PASS: result=B (for LI/MOV)
+               MUL  = 4'd10, PASS = 4'd11,
                NOR  = 4'd12, XNOR = 4'd13,
                MIN  = 4'd14, MAX  = 4'd15;
 
