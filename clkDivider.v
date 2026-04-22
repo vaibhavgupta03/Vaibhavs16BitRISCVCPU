@@ -1,17 +1,17 @@
 `timescale 1ns / 1ps
-// ─── Clock Divider ───────────────────────────────────────────────────
+
 module clkDivider #(
-    parameter SIM_MODE = 0   // 1 = skip divider for simulation
+    parameter SIM_MODE = 0
 )(
     input  clk,
     output clkout
 );
     generate
         if (SIM_MODE == 1) begin
-            // Simulation: pass clock straight through
+            
             assign clkout = clk;
         end else begin
-            // Hardware: divide 100MHz → ~1Hz (visible on LEDs)
+            
             reg [26:0] count;
             reg        clk_reg;
             assign clkout = clk_reg;
